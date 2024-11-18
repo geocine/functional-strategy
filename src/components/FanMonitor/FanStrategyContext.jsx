@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 export const FanStrategyContext = createContext(null);
 
+
 export const useFanStrategy = () => {
   const strategy = useContext(FanStrategyContext);
   if (!strategy) {
@@ -10,6 +11,7 @@ export const useFanStrategy = () => {
   }
   return strategy();  // Call the strategy hook to get the actual implementation
 };
+
 
 export const FanStrategyProvider = ({ strategy, children }) => (
   <FanStrategyContext.Provider value={strategy}>
