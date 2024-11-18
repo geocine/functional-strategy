@@ -1,20 +1,6 @@
 import PropTypes from 'prop-types';
-import { useFanStrategy } from '../contexts/FanStrategyContext';
-
-const useFanMonitor = (strategyHook) => {
-  const strategy = strategyHook();
-  const { state, setSpeed, reset, validateSpeed } = strategy;
-  const { speed, isRunning, warning } = state;
-
-  return {
-    speed,
-    isRunning,
-    warning,
-    reset,
-    setSpeed,
-    validateSpeed
-  };
-};
+import { useFanStrategy } from './FanStrategyContext';
+import useFanMonitor from './useFanMonitor';
 
 export const FanMonitor = ({ strategy }) => {
   const contextStrategy = useFanStrategy;

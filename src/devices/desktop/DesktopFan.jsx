@@ -1,6 +1,6 @@
-import { FanMonitor } from '../../components/FanMonitor';
+import { FanMonitor } from '@components/FanMonitor/FanMonitor';
 import { useDesktopFanStrategy } from './desktopFanStrategy';
-import { FanStrategyProvider } from '../../contexts/FanStrategyContext';
+import { FanStrategyProvider } from '@components/FanMonitor/FanStrategyContext';
 
 export const DesktopFan = () => {
   return (

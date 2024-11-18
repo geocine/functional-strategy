@@ -1,6 +1,6 @@
-import { FanMonitor } from '../../components/FanMonitor';
+import { FanMonitor } from '@components/FanMonitor/FanMonitor';
 import { useServerFanStrategy } from './serverFanStrategy';
-import { FanStrategyProvider } from '../../contexts/FanStrategyContext';
+import { FanStrategyProvider } from '@components/FanMonitor/FanStrategyContext';
 
 export const ServerFan = () => {
   return (
