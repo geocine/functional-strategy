@@ -1,9 +1,8 @@
 import { FanMonitor } from '../../components/FanMonitor';
 import { useLaptopFanStrategy } from './laptopFanStrategy';
+import { FanStrategyProvider } from '../../contexts/FanStrategyContext';
 
 export const LaptopFan = () => {
-  const strategy = useLaptopFanStrategy();
-
   return (
     <div className="fan-container">
       <h2>Laptop Fan</h2>
@@ -18,7 +17,9 @@ export const LaptopFan = () => {
         <div className="state-type">Strategy: Laptop Power Efficiency</div>
         <div className="state-type">State Management: Redux</div>
       </div>
-      <FanMonitor strategy={strategy} />
+      <FanStrategyProvider strategy={useLaptopFanStrategy}>
+        <FanMonitor />
+      </FanStrategyProvider>
     </div>
   );
 };

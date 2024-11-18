@@ -3,29 +3,29 @@ import { useDispatch, useSelector } from 'react-redux';
 
 const initialState = {
   speed: 0, // Start stopped to save power
-  isRunning: false
+  isRunning: false,
+  warning: null
 };
 
 const laptopSlice = createSlice({
   name: 'laptop',
   initialState,
   reducers: {
-    setSpeed: (state, action) => {
-      state.speed = action.payload;
-      state.isRunning = action.payload > 0;
+    setFanState: (state, action) => {
+      return { ...state, ...action.payload };
     },
     reset: () => initialState
   }
 });
 
-export const { setSpeed, reset } = laptopSlice.actions;
+export const { setFanState, reset } = laptopSlice.actions;
 export const laptopReducer = laptopSlice.reducer;
 
 export const useLaptopFanStrategy = () => {
   const dispatch = useDispatch();
   const state = useSelector(state => state.laptop);
 
-  const handleSpeedChange = (speed) => {
+  const setSpeed = (speed) => {
     let warning = null;
     
     // New rules for laptop fan
@@ -35,22 +35,23 @@ export const useLaptopFanStrategy = () => {
       warning = 'High power consumption - Battery drain warning';
     }
 
-    dispatch(setSpeed(speed));
-
-    return {
-      type: warning ? 'SET_FAN_SPEED_WITH_WARNING' : 'SET_FAN_SPEED',
-      payload: warning ? { speed, warning } : speed
-    };
+    dispatch(setFanState({
+      speed,
+      isRunning: speed > 0,
+      warning
+    }));
   };
 
   const handleReset = () => {
     dispatch(reset());
   };
 
+  const validateSpeed = (speed) => speed >= 0 && speed <= 10;
+
   return {
-    getState: () => state,
-    handleSpeedChange,
+    state,
+    setSpeed,
     reset: handleReset,
-    validateSpeed: (speed) => speed >= 0 && speed <= 10
+    validateSpeed
   };
 };

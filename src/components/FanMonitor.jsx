@@ -1,31 +1,43 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useFanStrategy } from '../contexts/FanStrategyContext';
+
+const useFanMonitor = (strategyHook) => {
+  const strategy = strategyHook();
+  const { state, setSpeed, reset, validateSpeed } = strategy;
+  const { speed, isRunning, warning } = state;
+
+  return {
+    speed,
+    isRunning,
+    warning,
+    reset,
+    setSpeed,
+    validateSpeed
+  };
+};
 
 export const FanMonitor = ({ strategy }) => {
-  const state = strategy.getState();
-  const [warning, setWarning] = useState(null);
-
-  const handleSpeedInput = (event) => {
-    const newSpeed = parseInt(event.target.value, 10);
-    if (strategy.validateSpeed?.(newSpeed) ?? true) {
-      const action = strategy.handleSpeedChange(newSpeed);
-      if (action.type === 'SET_FAN_SPEED_WITH_WARNING') {
-        setWarning(action.payload.warning);
-      } else {
-        setWarning(null);
-      }
-    }
-  };
-
-  const handleReset = () => {
-    strategy.reset();
-    setWarning(null);
-  };
+  const contextStrategy = useFanStrategy;
+  const {
+    speed,
+    isRunning,
+    warning,
+    reset,
+    setSpeed,
+    validateSpeed
+  } = useFanMonitor(strategy || contextStrategy);
 
   const getStatusColor = () => {
     if (warning) return 'warning';
-    if (state.speed > 0) return 'running';
+    if (speed > 0) return 'running';
     return '';
+  }
+
+  const handleSpeedInput = (event) => {
+    const newSpeed = parseInt(event.target.value, 10);
+    if (validateSpeed?.(newSpeed) ?? true) {
+      setSpeed(newSpeed);
+    }
   };
 
   return (
@@ -38,26 +50,26 @@ export const FanMonitor = ({ strategy }) => {
             type="range"
             min="0"
             max="10"
-            value={state.speed}
+            value={speed}
             onChange={handleSpeedInput}
             className={warning ? 'warning' : ''}
             step="1"
             aria-label="Fan speed control"
           />
           <span className={`speed-value ${warning ? 'warning' : ''}`}>
-            {state.speed}
+            {speed}
           </span>
         </div>
       </div>
       <div className={`fan-status ${getStatusColor()}`}>
-        <p>Status: {state.isRunning ? 'Running' : 'Stopped'}</p>
+        <p>Status: {isRunning ? 'Running' : 'Stopped'}</p>
         {warning && (
           <p className="warning-message" role="alert">
             ⚠️ {warning}
           </p>
         )}
       </div>
-      <button className="reset-button" onClick={handleReset}>
+      <button className="reset-button" onClick={reset}>
         Reset to Initial State
       </button>
     </div>
@@ -65,10 +77,5 @@ export const FanMonitor = ({ strategy }) => {
 };
 
 FanMonitor.propTypes = {
-  strategy: PropTypes.shape({
-    getState: PropTypes.func.isRequired,
-    handleSpeedChange: PropTypes.func.isRequired,
-    reset: PropTypes.func.isRequired,
-    validateSpeed: PropTypes.func
-  }).isRequired
+  strategy: PropTypes.func // Optional since it can also use context
 };

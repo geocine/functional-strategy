@@ -2,16 +2,16 @@ import { useReducer } from 'react';
 
 const initialState = {
   speed: 2, // Start at low speed for quiet operation
-  isRunning: true
+  isRunning: true,
+  warning: null
 };
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'SET_SPEED':
+    case 'SET_FAN_STATE':
       return {
         ...state,
-        speed: action.payload,
-        isRunning: action.payload > 0
+        ...action.payload
       };
     case 'RESET':
       return initialState;
@@ -23,7 +23,7 @@ const reducer = (state, action) => {
 export const useDesktopFanStrategy = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const handleSpeedChange = (speed) => {
+  const setSpeed = (speed) => {
     let warning = null;
     const limitedSpeed = Math.min(speed, 8); // Limit max speed for noise
     
@@ -31,22 +31,26 @@ export const useDesktopFanStrategy = () => {
       warning = 'High noise level';
     }
 
-    dispatch({ type: 'SET_SPEED', payload: limitedSpeed });
-
-    return {
-      type: warning ? 'SET_FAN_SPEED_WITH_WARNING' : 'SET_FAN_SPEED',
-      payload: warning ? { speed: limitedSpeed, warning } : limitedSpeed
-    };
+    dispatch({ 
+      type: 'SET_FAN_STATE', 
+      payload: {
+        speed: limitedSpeed,
+        isRunning: limitedSpeed > 0,
+        warning
+      }
+    });
   };
 
   const reset = () => {
     dispatch({ type: 'RESET' });
   };
 
+  const validateSpeed = (speed) => speed >= 0 && speed <= 8;
+
   return {
-    getState: () => state,
-    handleSpeedChange,
+    state,
+    setSpeed,
     reset,
-    validateSpeed: (speed) => speed >= 0 && speed <= 8
+    validateSpeed
   };
 };

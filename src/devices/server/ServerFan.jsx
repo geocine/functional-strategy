@@ -1,24 +1,25 @@
 import { FanMonitor } from '../../components/FanMonitor';
 import { useServerFanStrategy } from './serverFanStrategy';
+import { FanStrategyProvider } from '../../contexts/FanStrategyContext';
 
 export const ServerFan = () => {
-  const strategy = useServerFanStrategy();
-
   return (
     <div className="fan-container">
-      <h2>Server Room Fan</h2>
+      <h2>Server Fan</h2>
       <div className="strategy-summary">
         <h3>Strategy Rules</h3>
         <ul>
-          <li>Starts at medium speed (5) for safety</li>
-          <li>Warns if speed is below 3 (risk of overheating)</li>
-          <li>Warns if speed exceeds 8 (temperature check required)</li>
-          <li>Full speed range (0-10) available</li>
+          <li>Starts at speed 5 for safety</li>
+          <li>Warning at speeds below 3 (overheating risk)</li>
+          <li>Warning at speeds above 8 (check temperature)</li>
+          <li>Optimized for thermal safety</li>
         </ul>
-        <div className="state-type">Strategy: Server Room Safety</div>
+        <div className="state-type">Strategy: Server Thermal Safety</div>
         <div className="state-type">State Management: useState</div>
       </div>
-      <FanMonitor strategy={strategy} />
+      <FanStrategyProvider strategy={useServerFanStrategy}>
+        <FanMonitor />
+      </FanStrategyProvider>
     </div>
   );
 };

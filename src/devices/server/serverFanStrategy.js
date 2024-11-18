@@ -2,41 +2,41 @@ import { useState } from 'react';
 
 export const useServerFanStrategy = () => {
   const [state, setState] = useState({
-    speed: 5, // Start at medium speed for safety
-    isRunning: true
+    speed: 5,
+    isRunning: true,
+    warning: null
   });
 
-  const handleSpeedChange = (speed) => {
+  const setSpeed = (newSpeed) => {
     let warning = null;
     
-    if (speed < 3) {
+    if (newSpeed < 3) {
       warning = 'Low speed may cause overheating';
-    } else if (speed > 8) {
+    } else if (newSpeed > 8) {
       warning = 'High speed mode - Check temperature';
     }
 
     setState({
-      speed,
-      isRunning: speed > 0
+      speed: newSpeed,
+      isRunning: newSpeed > 0,
+      warning
     });
-
-    return {
-      type: warning ? 'SET_FAN_SPEED_WITH_WARNING' : 'SET_FAN_SPEED',
-      payload: warning ? { speed, warning } : speed
-    };
   };
 
   const reset = () => {
     setState({
       speed: 5,
-      isRunning: true
+      isRunning: true,
+      warning: null
     });
   };
 
+  const validateSpeed = (speed) => speed >= 0 && speed <= 10;
+
   return {
-    getState: () => state,
-    handleSpeedChange,
+    state,
+    setSpeed,
     reset,
-    validateSpeed: (speed) => speed >= 0 && speed <= 10
+    validateSpeed
   };
 };
