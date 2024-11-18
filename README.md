@@ -15,10 +15,6 @@ graph TD
     D --> F[Desktop Strategy]
     D --> G[Server Strategy]
     B --> H[useFanMonitor Hook]
-    
-    style A fill:#f9f,stroke:#333,stroke-width:2px
-    style B fill:#bbf,stroke:#333,stroke-width:2px
-    style C fill:#dfd,stroke:#333,stroke-width:2px
 ```
 
 ## Component Structure
