@@ -2,6 +2,9 @@
 
 This project demonstrates the implementation of the Strategy pattern using React and functional programming principles. It showcases how different fan control strategies can be implemented for various devices (laptop, desktop, server) while maintaining a consistent interface.
 
+![image](https://github.com/user-attachments/assets/b6662ffe-db08-44a7-bcf0-6b3c301c697b)
+
+
 ## Architecture Overview
 
 The project uses React with Vite and implements different state management approaches (Redux, useReducer, useState) to showcase various ways of handling state in a React application.
